@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -11,15 +11,14 @@ import { CustomSidenavComponent } from './components/custom-sidenav/custom-siden
 @Component({
     selector: 'app-root',
     imports: [
-        CommonModule,
-        RouterOutlet,
-        MatToolbarModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSidenavModule,
-        MatMenuModule,
-        CustomSidenavComponent,
-    ],
+    RouterOutlet,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatMenuModule,
+    CustomSidenavComponent
+],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })

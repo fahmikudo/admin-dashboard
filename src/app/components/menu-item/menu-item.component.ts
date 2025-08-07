@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -27,13 +27,12 @@ import { animate, style, transition, trigger } from '@angular/animations';
         ]),
     ],
     imports: [
-        CommonModule,
-        MatListModule,
-        MatIconModule,
-        MatButtonModule,
-        RouterLink,
-        RouterModule,
-    ],
+    MatListModule,
+    MatIconModule,
+    MatButtonModule,
+    RouterLink,
+    RouterModule
+],
     templateUrl: './menu-item.component.html',
     styleUrl: './menu-item.component.scss'
 })
