@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import {
   DataTableComponent,
   TableConfig,
@@ -25,7 +27,7 @@ export interface TableData {
   templateUrl: './sub-examples.component.html',
   styleUrl: './sub-examples.component.scss',
 })
-export class SubExamplesComponent implements OnInit {
+export class SubExamplesComponent implements OnInit, OnDestroy {
   tableConfig!: TableConfig;
   tableData: TableData[] = [];
   loading = false;
@@ -35,6 +37,9 @@ export class SubExamplesComponent implements OnInit {
   pageSize = 5;
   totalItems = 0;
   searchTerm = '';
+
+  // Subject for handling component destruction
+  private destroy$ = new Subject<void>();
 
   // Sample data
   sampleData: TableData[] = [
@@ -340,9 +345,80 @@ export class SubExamplesComponent implements OnInit {
     },
   ];
 
+  constructor(private router: Router, private route: ActivatedRoute) {}
+
   ngOnInit() {
     this.setupTableConfig();
-    this.loadData();
+    this.subscribeToQueryParams();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private subscribeToQueryParams() {
+    this.route.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        // Parse query parameters with defaults
+        const page = parseInt(params['page']) || 1;
+        const size = parseInt(params['size']) || 5;
+        const keyword = params['keyword'] || '';
+
+        // Convert page from 1-based to 0-based for internal use
+        this.currentPage = page - 1;
+        this.pageSize = size;
+        this.searchTerm = keyword;
+
+        // Check if this is the initial load without any query parameters
+        const hasParams = Object.keys(params).length > 0;
+
+        if (!hasParams) {
+          // No query parameters, set defaults and update URL
+          this.updateUrl(this.currentPage, this.pageSize, this.searchTerm);
+        } else {
+          // Update table config with new values
+          this.updateTableConfigFromUrl();
+
+          // Load data with parameters from URL
+          this.loadData(this.currentPage, this.pageSize, this.searchTerm);
+        }
+      });
+  }
+
+  private updateTableConfigFromUrl() {
+    if (this.tableConfig) {
+      // Create a new config object to trigger change detection
+      this.tableConfig = {
+        ...this.tableConfig,
+        currentPage: this.currentPage,
+        defaultPageSize: this.pageSize,
+        totalItems: this.totalItems, // Ensure total items is updated
+      };
+    }
+  }
+
+  private updateUrl(page: number, size: number, keyword: string) {
+    // Convert page from 0-based to 1-based for URL
+    const urlPage = page + 1;
+
+    // Prepare query params, only include non-empty keyword
+    const queryParams: any = {
+      page: urlPage,
+      size: size,
+    };
+
+    // Only add keyword to URL if it's not empty
+    if (keyword && keyword.trim()) {
+      queryParams.keyword = keyword.trim();
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      queryParamsHandling: 'merge',
+    });
   }
 
   private setupTableConfig() {
@@ -538,23 +614,16 @@ export class SubExamplesComponent implements OnInit {
     length: number;
   }) {
     console.log('Pagination changed:', event);
-    // Refetch data with new pagination parameters and current search term
-    this.loadData(event.pageIndex, event.pageSize, this.searchTerm);
+
+    // Update URL with new pagination parameters
+    this.updateUrl(event.pageIndex, event.pageSize, this.searchTerm);
   }
 
   onSearchChanged(searchTerm: string) {
     console.log('Search changed:', searchTerm);
-    // If search is cleared (empty string), reset to default page size and first page
-    if (!searchTerm) {
-      // When clearing search, reset everything to defaults
-      const defaultPageSize = this.tableConfig.defaultPageSize || 5;
-      this.pageSize = defaultPageSize;
-      this.currentPage = 0;
-      this.loadData(0, defaultPageSize, searchTerm);
-    } else {
-      // When searching, use current page size but reset to first page
-      this.loadData(0, this.pageSize, searchTerm);
-    }
+
+    // When searching, reset to first page
+    this.updateUrl(0, this.pageSize, searchTerm);
   }
 
   onCreateClicked() {

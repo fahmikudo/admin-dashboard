@@ -148,20 +148,36 @@ export class DataTableComponent
     if (this.paginator && this.config?.serverSidePagination) {
       if (changes['config']) {
         const configChange = changes['config'];
-        if (configChange.currentValue) {
+        if (configChange.currentValue && !configChange.firstChange) {
           const newConfig = configChange.currentValue;
+          const previousConfig = configChange.previousValue;
 
-          // Update paginator properties for server-side pagination
-          if (newConfig.totalItems !== undefined) {
+          // Update paginator properties for server-side pagination only if values actually changed
+          if (
+            newConfig.totalItems !== undefined &&
+            newConfig.totalItems !== previousConfig?.totalItems
+          ) {
             this.paginator.length = newConfig.totalItems;
           }
 
-          if (newConfig.currentPage !== undefined) {
-            this.paginator.pageIndex = newConfig.currentPage;
+          if (
+            newConfig.currentPage !== undefined &&
+            newConfig.currentPage !== previousConfig?.currentPage
+          ) {
+            // Prevent infinite loop by checking if the page index is actually different
+            if (this.paginator.pageIndex !== newConfig.currentPage) {
+              this.paginator.pageIndex = newConfig.currentPage;
+            }
           }
 
-          if (newConfig.defaultPageSize !== undefined) {
-            this.paginator.pageSize = newConfig.defaultPageSize;
+          if (
+            newConfig.defaultPageSize !== undefined &&
+            newConfig.defaultPageSize !== previousConfig?.defaultPageSize
+          ) {
+            // Prevent infinite loop by checking if the page size is actually different
+            if (this.paginator.pageSize !== newConfig.defaultPageSize) {
+              this.paginator.pageSize = newConfig.defaultPageSize;
+            }
           }
         }
       }
@@ -227,12 +243,8 @@ export class DataTableComponent
   clearSearch() {
     this.searchValue = '';
     if (this.config?.serverSideSearch) {
-      // For server-side search, reset paginator to defaults
-      if (this.paginator) {
-        this.paginator.pageIndex = 0;
-        this.paginator.pageSize = this.config.defaultPageSize || 5;
-      }
-      // Emit empty search term - parent will handle data loading with reset pagination
+      // For server-side search, emit empty search term
+      // Parent component will handle data loading and pagination reset
       this.searchChanged.emit('');
     } else {
       // For client-side search, apply filter and reset to first page
@@ -327,10 +339,6 @@ export class DataTableComponent
 
   private setupPagination() {
     if (this.config.paginationEnabled !== false && this.paginator) {
-      // Clear any existing subscriptions for this paginator
-      this.subscriptions.unsubscribe();
-      this.subscriptions = new Subscription();
-
       // For server-side pagination, don't connect paginator to data source
       if (!this.config.serverSidePagination) {
         this.dataSource.paginator = this.paginator;
@@ -357,17 +365,24 @@ export class DataTableComponent
       // Subscribe to page events
       this.subscriptions.add(
         this.paginator.page.subscribe((pageEvent: PageEvent) => {
-          // For client-side pagination, force data source to update its rendered rows
-          if (!this.config.serverSidePagination) {
+          // For server-side pagination, emit pagination change without updating data source
+          if (this.config.serverSidePagination) {
+            this.paginationChanged.emit({
+              pageIndex: pageEvent.pageIndex,
+              pageSize: pageEvent.pageSize,
+              length: pageEvent.length,
+            });
+          } else {
+            // For client-side pagination, force data source to update its rendered rows
             this.dataSource._updateChangeSubscription();
-          }
 
-          // Always emit pagination change event for parent component
-          this.paginationChanged.emit({
-            pageIndex: pageEvent.pageIndex,
-            pageSize: pageEvent.pageSize,
-            length: pageEvent.length,
-          });
+            // Also emit pagination change event for parent component
+            this.paginationChanged.emit({
+              pageIndex: pageEvent.pageIndex,
+              pageSize: pageEvent.pageSize,
+              length: pageEvent.length,
+            });
+          }
         })
       );
     }
