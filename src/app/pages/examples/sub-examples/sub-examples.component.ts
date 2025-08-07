@@ -1,14 +1,11 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import {
+  DataTableComponent,
+  TableConfig,
+  TableColumn,
+  TableAction,
+} from '../../../components/data-table/data-table.component';
 
 export interface TableData {
   id: number;
@@ -24,40 +21,22 @@ export interface TableData {
 @Component({
   selector: 'app-sub-examples',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-  ],
+  imports: [CommonModule, DataTableComponent],
   templateUrl: './sub-examples.component.html',
   styleUrl: './sub-examples.component.scss',
 })
-export class SubExamplesComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+export class SubExamplesComponent implements OnInit {
+  tableConfig!: TableConfig;
+  tableData: TableData[] = [];
+  loading = false;
 
-  displayedColumns: string[] = [
-    'id',
-    'name',
-    'email',
-    'department',
-    'role',
-    'status',
-    'joinDate',
-    'salary',
-    'actions',
-  ];
-  dataSource = new MatTableDataSource<TableData>();
-  searchValue = '';
+  // Pagination state for server-side pagination simulation
+  currentPage = 0;
+  pageSize = 5;
+  totalItems = 0;
 
   // Sample data
-  tableData: TableData[] = [
+  sampleData: TableData[] = [
     {
       id: 1,
       name: 'John Doe',
@@ -361,49 +340,205 @@ export class SubExamplesComponent implements OnInit, AfterViewInit {
   ];
 
   ngOnInit() {
-    this.dataSource.data = this.tableData;
+    this.setupTableConfig();
+    this.loadData();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+  private setupTableConfig() {
+    const columns: TableColumn[] = [
+      {
+        key: 'id',
+        label: 'ID',
+        width: '60px',
+        minWidth: '60px',
+        sortable: true,
+      },
+      {
+        key: 'name',
+        label: 'Name',
+        width: '150px',
+        minWidth: '150px',
+        sortable: true,
+      },
+      {
+        key: 'email',
+        label: 'Email',
+        width: '200px',
+        minWidth: '200px',
+        sortable: true,
+      },
+      {
+        key: 'department',
+        label: 'Department',
+        width: '120px',
+        minWidth: '120px',
+        sortable: true,
+      },
+      {
+        key: 'role',
+        label: 'Role',
+        width: '150px',
+        minWidth: '150px',
+        sortable: true,
+      },
+      {
+        key: 'status',
+        label: 'Status',
+        type: 'badge',
+        width: '100px',
+        minWidth: '100px',
+        sortable: true,
+        badgeConfig: {
+          active: {
+            class: 'status-active',
+            label: 'ACTIVE',
+          },
+          inactive: {
+            class: 'status-inactive',
+            label: 'INACTIVE',
+          },
+        },
+      },
+      {
+        key: 'joinDate',
+        label: 'Join Date',
+        type: 'date',
+        width: '120px',
+        minWidth: '120px',
+        sortable: true,
+      },
+      {
+        key: 'salary',
+        label: 'Salary',
+        type: 'currency',
+        width: '120px',
+        minWidth: '120px',
+        sortable: true,
+      },
+    ];
+
+    const actions: TableAction[] = [
+      {
+        key: 'view',
+        label: 'View',
+        icon: 'visibility',
+        color: '#2196f3',
+      },
+      {
+        key: 'edit',
+        label: 'Edit',
+        icon: 'edit',
+        color: '#ff9800',
+      },
+      {
+        key: 'delete',
+        label: 'Delete',
+        icon: 'delete',
+        color: '#f44336',
+      },
+    ];
+
+    this.tableConfig = {
+      columns,
+      actions,
+      searchEnabled: true,
+      searchPlaceholder: 'Search by name, email, department...',
+      paginationEnabled: true,
+      pageSizeOptions: [5, 10, 20, 50],
+      defaultPageSize: this.pageSize,
+      createButtonEnabled: true,
+      createButtonLabel: 'Create New',
+      tableMinWidth: '1200px',
+      maxHeight: '600px',
+      // Server-side pagination configuration
+      serverSidePagination: true,
+      totalItems: this.totalItems,
+      currentPage: this.currentPage,
+    };
   }
 
-  applyFilter() {
-    this.dataSource.filter = this.searchValue.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+  private loadData(pageIndex: number = 0, pageSize: number = 5) {
+    this.loading = true;
+
+    // Simulate API call with pagination
+    setTimeout(() => {
+      // Calculate pagination
+      const startIndex = pageIndex * pageSize;
+      const endIndex = startIndex + pageSize;
+
+      // Set total items
+      this.totalItems = this.sampleData.length;
+
+      // Get paginated data
+      this.tableData = this.sampleData.slice(startIndex, endIndex);
+
+      // Update pagination state
+      this.currentPage = pageIndex;
+      this.pageSize = pageSize;
+
+      // Update table config with new pagination info
+      this.tableConfig = {
+        ...this.tableConfig,
+        totalItems: this.totalItems,
+        currentPage: this.currentPage,
+        defaultPageSize: this.pageSize,
+      };
+
+      this.loading = false;
+      console.log(
+        `Loaded page ${pageIndex + 1} with ${pageSize} items per page. Total: ${
+          this.totalItems
+        }`
+      );
+    }, 1000);
+  }
+
+  onActionClicked(event: { action: string; row: TableData }) {
+    switch (event.action) {
+      case 'view':
+        this.viewRecord(event.row);
+        break;
+      case 'edit':
+        this.editRecord(event.row);
+        break;
+      case 'delete':
+        this.deleteRecord(event.row);
+        break;
     }
   }
 
-  clearSearch() {
-    this.searchValue = '';
-    this.applyFilter();
+  onPaginationChanged(event: {
+    pageIndex: number;
+    pageSize: number;
+    length: number;
+  }) {
+    console.log('Pagination changed:', event);
+    // Refetch data with new pagination parameters
+    this.loadData(event.pageIndex, event.pageSize);
   }
 
-  addNew() {
-    console.log('Add new record');
-    // Implement add new functionality
+  onCreateClicked() {
+    console.log('Create new record');
+    // Implement create functionality
   }
 
-  editRecord(element: TableData) {
-    console.log('Edit record:', element);
-    // Implement edit functionality
+  onRowClicked(row: TableData) {
+    console.log('Row clicked:', row);
+    // Implement row click functionality
   }
 
-  viewRecord(element: TableData) {
+  private viewRecord(element: TableData) {
     console.log('View record:', element);
     // Implement view functionality
   }
 
-  deleteRecord(element: TableData) {
-    console.log('Delete record:', element);
-    // Implement delete functionality
+  private editRecord(element: TableData) {
+    console.log('Edit record:', element);
+    // Implement edit functionality
   }
 
-  formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+  private deleteRecord(element: TableData) {
+    console.log('Delete record:', element);
+    // Implement delete functionality
   }
 }
