@@ -34,6 +34,7 @@ export class SubExamplesComponent implements OnInit {
   currentPage = 0;
   pageSize = 5;
   totalItems = 0;
+  searchTerm = '';
 
   // Sample data
   sampleData: TableData[] = [
@@ -454,27 +455,50 @@ export class SubExamplesComponent implements OnInit {
       serverSidePagination: true,
       totalItems: this.totalItems,
       currentPage: this.currentPage,
+      // Server-side search configuration
+      serverSideSearch: true,
+      searchDebounceTime: 300,
     };
   }
 
-  private loadData(pageIndex: number = 0, pageSize: number = 5) {
+  private loadData(
+    pageIndex: number = 0,
+    pageSize: number = 5,
+    searchTerm: string = ''
+  ) {
     this.loading = true;
 
-    // Simulate API call with pagination
+    // Simulate API call with pagination and search
     setTimeout(() => {
-      // Calculate pagination
+      let filteredData = this.sampleData;
+
+      // Apply search filter if search term is provided
+      if (searchTerm && searchTerm.trim()) {
+        const searchLower = searchTerm.toLowerCase();
+        filteredData = this.sampleData.filter(
+          (item) =>
+            item.name.toLowerCase().includes(searchLower) ||
+            item.email.toLowerCase().includes(searchLower) ||
+            item.department.toLowerCase().includes(searchLower) ||
+            item.role.toLowerCase().includes(searchLower) ||
+            item.status.toLowerCase().includes(searchLower)
+        );
+      }
+
+      // Set total items after filtering
+      this.totalItems = filteredData.length;
+
+      // Calculate pagination on filtered data
       const startIndex = pageIndex * pageSize;
       const endIndex = startIndex + pageSize;
 
-      // Set total items
-      this.totalItems = this.sampleData.length;
-
-      // Get paginated data
-      this.tableData = this.sampleData.slice(startIndex, endIndex);
+      // Get paginated data from filtered results
+      this.tableData = filteredData.slice(startIndex, endIndex);
 
       // Update pagination state
       this.currentPage = pageIndex;
       this.pageSize = pageSize;
+      this.searchTerm = searchTerm;
 
       // Update table config with new pagination info
       this.tableConfig = {
@@ -485,10 +509,11 @@ export class SubExamplesComponent implements OnInit {
       };
 
       this.loading = false;
+      const searchInfo = searchTerm ? ` with search: "${searchTerm}"` : '';
       console.log(
         `Loaded page ${pageIndex + 1} with ${pageSize} items per page. Total: ${
           this.totalItems
-        }`
+        }${searchInfo}`
       );
     }, 1000);
   }
@@ -513,8 +538,23 @@ export class SubExamplesComponent implements OnInit {
     length: number;
   }) {
     console.log('Pagination changed:', event);
-    // Refetch data with new pagination parameters
-    this.loadData(event.pageIndex, event.pageSize);
+    // Refetch data with new pagination parameters and current search term
+    this.loadData(event.pageIndex, event.pageSize, this.searchTerm);
+  }
+
+  onSearchChanged(searchTerm: string) {
+    console.log('Search changed:', searchTerm);
+    // If search is cleared (empty string), reset to default page size and first page
+    if (!searchTerm) {
+      // When clearing search, reset everything to defaults
+      const defaultPageSize = this.tableConfig.defaultPageSize || 5;
+      this.pageSize = defaultPageSize;
+      this.currentPage = 0;
+      this.loadData(0, defaultPageSize, searchTerm);
+    } else {
+      // When searching, use current page size but reset to first page
+      this.loadData(0, this.pageSize, searchTerm);
+    }
   }
 
   onCreateClicked() {

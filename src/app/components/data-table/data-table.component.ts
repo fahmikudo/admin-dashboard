@@ -12,7 +12,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import {
   MatPaginatorModule,
@@ -25,6 +26,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 export interface TableColumn {
   key: string;
@@ -68,6 +70,9 @@ export interface TableConfig {
   totalItems?: number;
   currentPage?: number;
   serverSidePagination?: boolean;
+  // Server-side search support
+  serverSideSearch?: boolean;
+  searchDebounceTime?: number; // milliseconds to debounce search input
 }
 
 @Component({
@@ -84,6 +89,7 @@ export interface TableConfig {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
@@ -103,6 +109,7 @@ export class DataTableComponent
     pageSize: number;
     length: number;
   }>();
+  @Output() searchChanged = new EventEmitter<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -111,9 +118,11 @@ export class DataTableComponent
   displayedColumns: string[] = [];
   searchValue = '';
   private subscriptions = new Subscription();
+  private searchSubject = new Subject<string>();
 
   ngOnInit() {
     this.setupTable();
+    this.setupSearchDebouncing();
   }
 
   ngAfterViewInit() {
@@ -161,6 +170,27 @@ export class DataTableComponent
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.searchSubject.complete();
+  }
+
+  private setupSearchDebouncing() {
+    // Set up search debouncing for server-side search
+    this.subscriptions.add(
+      this.searchSubject
+        .pipe(
+          debounceTime(this.config?.searchDebounceTime || 300),
+          distinctUntilChanged()
+        )
+        .subscribe((searchTerm: string) => {
+          if (this.config?.serverSideSearch) {
+            // Reset paginator to first page when search is applied
+            if (this.paginator) {
+              this.paginator.pageIndex = 0;
+            }
+            this.searchChanged.emit(searchTerm);
+          }
+        })
+    );
   }
 
   private setupTable() {
@@ -182,15 +212,35 @@ export class DataTableComponent
   }
 
   applyFilter() {
-    this.dataSource.filter = this.searchValue.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    if (this.config?.serverSideSearch) {
+      // For server-side search, emit the search term through the debounced subject
+      this.searchSubject.next(this.searchValue.trim());
+    } else {
+      // For client-side search, apply filter to data source and reset to first page
+      this.dataSource.filter = this.searchValue.trim().toLowerCase();
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
+      }
     }
   }
 
   clearSearch() {
     this.searchValue = '';
-    this.applyFilter();
+    if (this.config?.serverSideSearch) {
+      // For server-side search, reset paginator to defaults
+      if (this.paginator) {
+        this.paginator.pageIndex = 0;
+        this.paginator.pageSize = this.config.defaultPageSize || 5;
+      }
+      // Emit empty search term - parent will handle data loading with reset pagination
+      this.searchChanged.emit('');
+    } else {
+      // For client-side search, apply filter and reset to first page
+      this.dataSource.filter = this.searchValue.trim().toLowerCase();
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
+      }
+    }
   }
 
   onActionClick(action: string, row: any) {
@@ -330,24 +380,27 @@ export class DataTableComponent
   }
 
   private setupFilter() {
-    // Custom filter predicate for searchable columns
-    this.dataSource.filterPredicate = (data: any, filter: string) => {
-      const searchableColumns = this.config.columns.filter(
-        (col) => col.searchable !== false
-      );
-      const searchStr = searchableColumns
-        .map((col) => {
-          const value = data[col.key];
-          if (value == null) return '';
-          if (col.type === 'date' && value instanceof Date) {
-            return value.toLocaleDateString();
-          }
-          return value.toString();
-        })
-        .join(' ')
-        .toLowerCase();
+    // Only set up client-side filter predicate if not using server-side search
+    if (!this.config?.serverSideSearch) {
+      // Custom filter predicate for searchable columns
+      this.dataSource.filterPredicate = (data: any, filter: string) => {
+        const searchableColumns = this.config.columns.filter(
+          (col) => col.searchable !== false
+        );
+        const searchStr = searchableColumns
+          .map((col) => {
+            const value = data[col.key];
+            if (value == null) return '';
+            if (col.type === 'date' && value instanceof Date) {
+              return value.toLocaleDateString();
+            }
+            return value.toString();
+          })
+          .join(' ')
+          .toLowerCase();
 
-      return searchStr.includes(filter);
-    };
+        return searchStr.includes(filter);
+      };
+    }
   }
 }
