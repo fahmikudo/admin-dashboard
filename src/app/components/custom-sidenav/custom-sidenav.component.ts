@@ -13,18 +13,17 @@ export type MenuItem = {
 };
 
 @Component({
-  selector: 'app-custom-sidenav',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatListModule,
-    MatIconModule,
-    RouterLink,
-    RouterModule,
-    MenuItemComponent,
-  ],
-  templateUrl: './custom-sidenav.component.html',
-  styleUrl: './custom-sidenav.component.scss',
+    selector: 'app-custom-sidenav',
+    imports: [
+        CommonModule,
+        MatListModule,
+        MatIconModule,
+        RouterLink,
+        RouterModule,
+        MenuItemComponent,
+    ],
+    templateUrl: './custom-sidenav.component.html',
+    styleUrl: './custom-sidenav.component.scss'
 })
 export class CustomSidenavComponent {
   sideNavCollapsed = signal(false);
