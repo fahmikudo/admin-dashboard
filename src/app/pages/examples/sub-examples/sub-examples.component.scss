@@ -1,0 +1,276 @@
+.data-table-container {
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 100px;
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+
+    .search-section {
+      flex: 1;
+      max-width: 400px;
+
+      .search-field {
+        width: 100%;
+        
+        .mat-mdc-form-field-flex {
+          align-items: center;
+        }
+      }
+    }
+
+    .action-section {
+      .create-button {
+        min-width: 140px;
+        height: 40px;
+        
+        mat-icon {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .table-wrapper {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+
+    .table-container {
+      max-height: 600px;
+      overflow: auto;
+      position: relative;
+
+      .data-table {
+        width: 100%;
+        min-width: 1200px; // Ensures horizontal scrolling
+        
+        // Sticky header styles
+        .sticky-header {
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          background: #f5f5f5;
+          border-bottom: 2px solid #ddd;
+          font-weight: 600;
+          color: #333;
+        }
+
+        // Sticky actions column (right side)
+        .sticky-actions {
+          position: sticky;
+          right: 0;
+          z-index: 11;
+          background: inherit;
+          border-left: 1px solid #e0e0e0;
+          width: 80px;
+          min-width: 80px;
+          max-width: 80px;
+          text-align: center;
+        }
+
+        // Header row
+        .mat-mdc-header-row {
+          background: #f5f5f5;
+          
+          .mat-mdc-header-cell {
+            padding: 16px 8px;
+            border-bottom: 2px solid #ddd;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            
+            &:first-child {
+              padding-left: 16px;
+            }
+            
+            &:last-child {
+              padding-right: 16px;
+            }
+          }
+        }
+
+        // Data rows
+        .mat-mdc-row {
+          &:hover {
+            background-color: #f9f9f9;
+          }
+
+          &:nth-child(even) {
+            background-color: #fafafa;
+          }
+
+          .mat-mdc-cell {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            line-height: 1.4;
+            
+            &:first-child {
+              padding-left: 16px;
+            }
+            
+            &:last-child {
+              padding-right: 16px;
+            }
+          }
+        }
+
+        // Column specific styles
+        th:nth-child(1), td:nth-child(1) { // ID
+          width: 60px;
+          min-width: 60px;
+        }
+        
+        th:nth-child(2), td:nth-child(2) { // Name
+          width: 150px;
+          min-width: 150px;
+        }
+        
+        th:nth-child(3), td:nth-child(3) { // Email
+          width: 200px;
+          min-width: 200px;
+        }
+        
+        th:nth-child(4), td:nth-child(4) { // Department
+          width: 120px;
+          min-width: 120px;
+        }
+        
+        th:nth-child(5), td:nth-child(5) { // Role
+          width: 150px;
+          min-width: 150px;
+        }
+        
+        th:nth-child(6), td:nth-child(6) { // Status
+          width: 100px;
+          min-width: 100px;
+        }
+        
+        th:nth-child(7), td:nth-child(7) { // Join Date
+          width: 120px;
+          min-width: 120px;
+        }
+        
+        th:nth-child(8), td:nth-child(8) { // Salary
+          width: 120px;
+          min-width: 120px;
+        }
+      }
+    }
+  }
+
+  // Status badges
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    
+    &.status-active {
+      background-color: #e8f5e8;
+      color: #2e7d32;
+    }
+    
+    &.status-inactive {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+  }
+
+  // Action menu styles
+  .delete-action {
+    color: #f44336;
+    
+    mat-icon {
+      color: #f44336;
+    }
+  }
+
+  // Pagination wrapper
+  .pagination-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 16px;
+    
+    mat-paginator {
+      background: transparent;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .data-table-container {
+    padding: 16px;
+    
+    .table-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+      
+      .search-section {
+        max-width: none;
+      }
+      
+      .action-section {
+        align-self: flex-end;
+      }
+    }
+  }
+}
+
+// Scrollbar styling
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  
+  &:hover {
+    background: #a1a1a1;
+  }
+}
+
+// Material form field customization
+::ng-deep .search-field {
+  .mat-mdc-text-field-wrapper {
+    background-color: #fff;
+  }
+  
+  .mat-mdc-form-field-focus-overlay {
+    background-color: transparent;
+  }
+}
+
+// Material table customization
+::ng-deep .data-table {
+  .mat-mdc-table {
+    background: transparent;
+  }
+  
+  .mat-mdc-header-cell {
+    border-bottom-color: #ddd !important;
+  }
+  
+  .mat-mdc-cell {
+    border-bottom-color: #e0e0e0 !important;
+  }
+}
