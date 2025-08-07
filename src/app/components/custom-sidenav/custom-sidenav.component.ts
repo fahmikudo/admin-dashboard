@@ -41,12 +41,11 @@ export class CustomSidenavComponent {
     {
       label: 'Examples',
       icon: 'wrap_text',
-      route: 'examples',
       subItems: [
         {
           label: 'Sub Examples',
           icon: 'video_library',
-          route: 'sub-examples',
+          route: 'examples/sub-examples',
         },
       ],
     },

@@ -1,21 +1,12 @@
-<a
-  mat-list-item
-  class="menu-item"
-  [routerLink]="item().route"
-  (click)="toggleNested()"
-  routerLinkActive="selected-menu-item"
-  #rla="routerLinkActive"
-  [activated]="rla.isActive"
->
-  <mat-icon
-    [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-    matListItemIcon
-  >
-    {{ item().icon }}</mat-icon
-  >
+@if (item().subItems) {
+<!-- Main menu item with subItems - only collapsible, no route -->
+<button mat-list-item class="menu-item" (click)="toggleNested()">
+  <mat-icon matListItemIcon>
+    {{ item().icon }}
+  </mat-icon>
   @if (!collapsed()) {
   <span matListItemTitle> {{ item().label }} </span>
-  } @if (item().subItems) {
+  }
   <span matListItemMeta>
     @if (nestedMenuOpen()) {
     <mat-icon>expand_less</mat-icon>
@@ -23,27 +14,26 @@
     <mat-icon>expand_more</mat-icon>
     }
   </span>
+</button>
+} @else {
+<!-- Single menu item without subItems - direct route -->
+<a mat-list-item class="menu-item" [routerLink]="item().route" routerLinkActive="selected-menu-item"
+  #rla="routerLinkActive" [activated]="rla.isActive">
+  <mat-icon [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'" matListItemIcon>
+    {{ item().icon }}</mat-icon>
+  @if (!collapsed()) {
+  <span matListItemTitle> {{ item().label }} </span>
   }
 </a>
+}
 
 @if (item().subItems && nestedMenuOpen()) {
 <div @expandContractMenu>
   @for (subItem of item().subItems; track subItem.label) {
-  <a
-    mat-list-item
-    class="menu-item"
-    [class.indented]="!collapsed()"
-    [routerLink]="item().route + '/' + subItem.route"
-    routerLinkActive="selected-menu-item"
-    #rla="routerLinkActive"
-    [activated]="rla.isActive"
-  >
-    <mat-icon
-      [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-      matListItemIcon
-    >
-      {{ subItem.icon }}</mat-icon
-    >
+  <a mat-list-item class="menu-item" [class.indented]="!collapsed()" [routerLink]="subItem.route"
+    routerLinkActive="selected-menu-item" #rla="routerLinkActive" [activated]="rla.isActive">
+    <mat-icon [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'" matListItemIcon>
+      {{ subItem.icon }}</mat-icon>
     @if (!collapsed()) {
     <span matListItemTitle> {{ subItem.label }} </span>
     }

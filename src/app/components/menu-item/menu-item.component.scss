@@ -2,16 +2,36 @@
   transition: all 500ms ease-in-out;
 }
 
+/* Override MDC list item borders */
+.mdc-list-item {
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.mdc-list-item::before,
+.mdc-list-item::after {
+  border: none !important;
+}
+
+/* Ensure consistent alignment for all menu items */
 .menu-item {
-  border-left: 5px solid;
-  border-left-color: rgba(0, 0, 0, 0);
+  --mat-list-list-item-leading-icon-start-space: 16px;
+  --mat-list-list-item-leading-icon-end-space: 16px;
+}
+
+/* Consistent padding and alignment for both button and anchor elements */
+button.menu-item,
+a.menu-item {
+  padding-left: 16px !important;
+  text-align: left;
+  justify-content: flex-start;
 }
 
 .selected-menu-item {
-  border-left-color: var(--primary-color);
   background-color: rgba(0, 0, 0, 0.05);
 }
 
 .indented {
   --mat-list-list-item-leading-icon-start-space: 48px;
+  padding-left: 48px !important;
 }

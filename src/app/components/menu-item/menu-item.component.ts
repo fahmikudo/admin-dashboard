@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
 import { RouterLink, RouterModule } from '@angular/router';
 import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -36,6 +37,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     CommonModule,
     MatListModule,
     MatIconModule,
+    MatButtonModule,
     RouterLink,
     RouterModule,
   ],
@@ -49,9 +51,6 @@ export class MenuItemComponent {
   nestedMenuOpen = signal(false);
 
   toggleNested() {
-    if (!this.item().subItems) {
-      return;
-    }
     this.nestedMenuOpen.set(!this.nestedMenuOpen());
   }
 }
