@@ -1,4 +1,3 @@
-
 import { Component, computed, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -9,18 +8,19 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CustomSidenavComponent } from './components/custom-sidenav/custom-sidenav.component';
 
 @Component({
-    selector: 'app-root',
-    imports: [
+  selector: 'app-root',
+  standalone: true,
+  imports: [
     RouterOutlet,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
     MatMenuModule,
-    CustomSidenavComponent
-],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss'
+    CustomSidenavComponent,
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'admin-dashboard';
