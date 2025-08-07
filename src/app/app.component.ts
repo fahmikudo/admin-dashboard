@@ -6,11 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { CustomSidenavComponent } from './components/custom-sidenav/custom-sidenav.component';
+import { AuthService } from './services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     MatToolbarModule,
     MatButtonModule,
@@ -26,16 +29,16 @@ export class AppComponent {
   title = 'admin-dashboard';
 
   collapsed = signal(false);
-
   sideNavWidth = computed(() => (this.collapsed() ? '65px' : '280px'));
 
-  onAccountSettings() {
-    console.log('Navigate to account settings');
-    // Add navigation logic here
+  constructor(public authService: AuthService) {}
+
+  onAccountSettings(): void {
+    // TODO: Implement account settings
+    console.log('Account settings clicked');
   }
 
-  onLogout() {
-    console.log('Logging out...');
-    // Add logout logic here
+  onLogout(): void {
+    this.authService.logout();
   }
 }

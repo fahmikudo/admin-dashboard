@@ -1,0 +1,114 @@
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #fafafa;
+  padding: 20px;
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-card {
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+}
+
+.login-card mat-card-header {
+  text-align: center;
+  margin-bottom: 20px;
+  
+  mat-card-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  mat-card-subtitle {
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.login-button {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d32f2f;
+  font-size: 14px;
+  background-color: #ffebee;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ffcdd2;
+  
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.demo-credentials {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  
+  h4 {
+    margin: 0 0 12px 0;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  p {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #555;
+    
+    strong {
+      color: #333;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 480px) {
+  .login-container {
+    padding: 16px;
+  }
+  
+  .login-card {
+    padding: 16px;
+  }
+  
+  .login-card mat-card-header mat-card-title {
+    font-size: 24px;
+  }
+}

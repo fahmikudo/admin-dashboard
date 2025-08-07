@@ -1,3 +1,4 @@
+@if (authService.isAuthenticated()) {
 <mat-toolbar class="mat-elevation-z3">
   <button mat-icon-button (click)="collapsed.set(!collapsed())">
     <mat-icon>menu</mat-icon>
@@ -28,3 +29,6 @@
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
+} @else {
+<router-outlet></router-outlet>
+}
