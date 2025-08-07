@@ -31,3 +31,13 @@
   opacity: 0;
   height: 0px !important;
 }
+
+/* Ensure collapsed class works properly */
+mat-nav-list.collapsed {
+  text-align: center;
+}
+
+mat-nav-list.collapsed app-menu-item {
+  display: block;
+  text-align: center;
+}

@@ -27,6 +27,64 @@ a.menu-item {
   justify-content: flex-start;
 }
 
+/* When sidenav is collapsed, center the icons to align with header */
+::ng-deep .collapsed .menu-item {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+::ng-deep .collapsed .menu-item .mdc-list-item {
+  justify-content: center !important;
+  padding: 8px 0 !important;
+  width: 100% !important;
+}
+
+::ng-deep .collapsed .menu-item .mdc-list-item__content {
+  justify-content: center !important;
+  padding: 0 !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+::ng-deep .collapsed .menu-item .mdc-list-item__start {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+
+::ng-deep .collapsed .menu-item .mat-mdc-list-item-icon {
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+::ng-deep .collapsed .menu-item .mat-icon {
+  margin: 0 auto !important;
+  display: block !important;
+}
+
+/* Fallback: Use transform to center if flexbox doesn't work */
+::ng-deep .collapsed .menu-item {
+  position: relative !important;
+}
+
+::ng-deep .collapsed .menu-item .mat-icon {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* Hide arrow icons when collapsed */
+::ng-deep .collapsed .menu-item mat-list-item-meta,
+::ng-deep .collapsed .menu-item .mat-mdc-list-item-meta,
+::ng-deep .collapsed .menu-item [matListItemMeta] {
+  display: none !important;
+}
+
 .selected-menu-item {
   background-color: rgba(0, 0, 0, 0.05);
 }
