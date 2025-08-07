@@ -1,0 +1,8 @@
+// This component now uses the reusable data table component
+// All styling is handled by the reusable component
+// You can add any specific customizations here if needed
+
+:host {
+  display: block;
+  width: 100%;
+}
