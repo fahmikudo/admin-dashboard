@@ -1,43 +1,67 @@
-:host * {
-  transition: all 200ms ease-in-out;
+:host {
+  display: block;
+  height: 100%;
+  color: var(--text-primary);
 }
 
 .sidenav-header {
-  padding-top: 24px;
-  text-align: center;
-  > img {
-    border-radius: 100%;
-    object-fit: cover;
-    margin-bottom: 10px;
-  }
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
 
-  .header-text {
-    height: 3rem;
-
-    > h2 {
-      margin: 0;
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
-
-    > p {
-      margin: 0;
-      font-size: 0.8rem;
-    }
+  &.collapsed {
+    justify-content: center;
+    padding-inline: 0;
   }
 }
 
-.hide-header-text {
-  opacity: 0;
-  height: 0px !important;
+.workspace-icon {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-primary), #1557b7);
 }
 
-/* Ensure collapsed class works properly */
+.header-text {
+  min-width: 0;
+
+  h2 {
+    margin: 0;
+    overflow: hidden;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  p {
+    margin: 0;
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 11px;
+    line-height: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+mat-nav-list {
+  display: grid;
+  gap: 1px;
+  padding: var(--space-2);
+}
+
 mat-nav-list.collapsed {
-  text-align: center;
-}
-
-mat-nav-list.collapsed app-menu-item {
-  display: block;
-  text-align: center;
+  padding-inline: var(--space-2);
 }

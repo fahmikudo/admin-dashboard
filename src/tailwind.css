@@ -1,0 +1,63 @@
+@layer theme, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme inline {
+  --font-sans: Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-brand: var(--color-primary);
+  --color-brand-hover: var(--color-primary-hover);
+  --color-brand-soft: var(--color-primary-soft);
+  --color-brand-subtle: var(--color-primary-subtle);
+  --color-accent-app: var(--color-accent);
+  --color-accent-app-soft: var(--color-accent-soft);
+  --color-success-app: var(--color-success);
+  --color-success-app-soft: var(--color-success-soft);
+  --color-warning-app: var(--color-warning);
+  --color-warning-app-soft: var(--color-warning-soft);
+  --color-danger-app: var(--color-danger);
+  --color-danger-app-soft: var(--color-danger-soft);
+  --color-page: var(--surface-page);
+  --color-panel: var(--surface-panel);
+  --color-panel-muted: var(--surface-panel-muted);
+  --color-panel-hover: var(--surface-hover);
+  --color-line: var(--border-subtle);
+  --color-line-strong: var(--border-strong);
+  --color-ink: var(--text-primary);
+  --color-ink-muted: var(--text-secondary);
+  --color-ink-subtle: var(--text-muted);
+  --radius-app-sm: var(--radius-sm);
+  --radius-app-md: var(--radius-md);
+  --radius-app-lg: var(--radius-lg);
+  --shadow-app-sm: var(--shadow-sm);
+  --shadow-app-md: var(--shadow-md);
+  --spacing-app-1: var(--space-1);
+  --spacing-app-2: var(--space-2);
+  --spacing-app-3: var(--space-3);
+  --spacing-app-4: var(--space-4);
+  --spacing-app-5: var(--space-5);
+  --spacing-app-6: var(--space-6);
+}
+
+@utility app-panel {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-panel);
+  box-shadow: var(--shadow-sm);
+}
+
+@utility app-chip {
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+@utility app-focus-ring {
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
+  outline-offset: 2px;
+}

@@ -1,26 +1,69 @@
 @if (authService.isAuthenticated()) {
-<mat-toolbar class="mat-elevation-z3">
-  <button mat-icon-button (click)="collapsed.set(!collapsed())">
+<mat-toolbar>
+  <button mat-icon-button class="nav-toggle" (click)="collapsed.set(!collapsed())" aria-label="Toggle navigation">
     <mat-icon>menu</mat-icon>
   </button>
 
+  <div class="product-mark">
+    <span class="mark-icon">R</span>
+    <span class="mark-text">Retail ERP</span>
+  </div>
+
+  <div class="search-slot">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="navbar-search">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput type="search" placeholder="Search products, orders, customers" aria-label="Global search" />
+      <button mat-icon-button matSuffix type="button" aria-label="Search options">
+        <mat-icon>tune</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
   <span class="spacer"></span>
 
-  <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar-button">
+  <button mat-icon-button aria-label="Open apps">
+    <mat-icon>apps</mat-icon>
+  </button>
+  <button mat-icon-button aria-label="Help">
+    <mat-icon>help_outline</mat-icon>
+  </button>
+  <button mat-icon-button aria-label="Notifications">
+    <mat-icon>notifications_none</mat-icon>
+  </button>
+
+  <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar-button" aria-label="User menu">
     <mat-icon>account_circle</mat-icon>
   </button>
 
-  <mat-menu #userMenu="matMenu" xPosition="before">
+  <mat-menu #userMenu="matMenu" xPosition="before" class="account-menu">
+    <div class="account-menu-header" role="presentation">
+      <mat-icon>account_circle</mat-icon>
+      <div>
+        <strong>Admin User</strong>
+        <span>admin@retail-erp.local</span>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="onAccountSettings()">
-      <mat-icon>settings</mat-icon>
-      <span>Account Settings</span>
+      <mat-icon>person</mat-icon>
+      <span>Profile</span>
     </button>
+    <button mat-menu-item>
+      <mat-icon>tune</mat-icon>
+      <span>Preferences</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>keyboard</mat-icon>
+      <span>Shortcuts</span>
+    </button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="onLogout()">
       <mat-icon>logout</mat-icon>
-      <span>Logout</span>
+      <span>Sign out</span>
     </button>
   </mat-menu>
 </mat-toolbar>
+
 <mat-sidenav-container>
   <mat-sidenav opened mode="side" [style.width]="sideNavWidth()">
     <app-custom-sidenav [collapsed]="collapsed()" />
