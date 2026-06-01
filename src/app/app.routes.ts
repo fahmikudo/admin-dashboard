@@ -21,6 +21,41 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'sales',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'inventory',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'purchasing',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'customers',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'finance',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'reports',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'settings',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'examples',
     component: ExamplesComponent,
     canActivate: [AuthGuard],

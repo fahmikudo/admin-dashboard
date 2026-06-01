@@ -5,6 +5,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { CustomSidenavComponent } from './components/custom-sidenav/custom-sidenav.component';
 import { AuthService } from './services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -20,6 +23,9 @@ import { CommonModule } from '@angular/common';
     MatIconModule,
     MatSidenavModule,
     MatMenuModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
     CustomSidenavComponent,
   ],
   templateUrl: './app.component.html',
@@ -29,7 +35,7 @@ export class AppComponent {
   title = 'admin-dashboard';
 
   collapsed = signal(false);
-  sideNavWidth = computed(() => (this.collapsed() ? '65px' : '280px'));
+  sideNavWidth = computed(() => (this.collapsed() ? '64px' : '232px'));
 
   constructor(public authService: AuthService) {}
 

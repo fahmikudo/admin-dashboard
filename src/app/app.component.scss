@@ -1,31 +1,229 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--surface-page);
+}
+
 mat-toolbar {
   position: relative;
   z-index: 5;
+  height: var(--app-toolbar-height);
+  min-height: var(--app-toolbar-height);
   display: flex;
   align-items: center;
-  
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+  color: var(--text-primary);
+  background: var(--surface-panel);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: none;
+
   .spacer {
     flex: 1 1 auto;
   }
-  
-  .avatar-button {
-    .mat-icon {
-      font-size: 28px;
-      width: 28px;
-      height: 28px;
+
+  > button {
+    color: var(--text-secondary);
+  }
+}
+
+.product-mark {
+  display: inline-flex;
+  width: 184px;
+  align-items: center;
+  gap: var(--space-2);
+  padding-right: var(--space-2);
+}
+
+.mark-icon {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-primary), #1557b7);
+}
+
+.mark-text {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-slot {
+  position: absolute;
+  left: 50%;
+  width: min(720px, 46vw);
+  transform: translateX(-50%);
+}
+
+.navbar-search {
+  width: 100%;
+  --mat-form-field-container-height: 36px;
+  --mat-form-field-container-vertical-padding: 6px;
+
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      height: 36px;
+      background: var(--surface-panel-muted);
+      border-radius: var(--radius-sm);
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--border-subtle) !important;
+    }
+
+    .mat-mdc-form-field-infix {
+      min-height: 36px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    .mat-mdc-form-field-icon-prefix,
+    .mat-mdc-form-field-icon-suffix {
+      color: var(--text-muted);
+      padding: 0 8px;
+    }
+
+    input {
+      color: var(--text-primary);
+      font-size: 13px;
+
+      &::placeholder {
+        color: var(--text-muted);
+      }
     }
   }
 }
 
-.content {
-  padding: 24px;
+.avatar-button .mat-icon {
+  color: var(--text-secondary);
+}
+
+::ng-deep .account-menu {
+  width: 240px;
+  max-width: 240px !important;
+
+  .mat-mdc-menu-content {
+    padding: var(--space-1) 0;
+  }
+
+  .mat-mdc-menu-item {
+    min-height: 36px;
+    padding: 0 var(--space-3);
+    color: var(--text-primary);
+    font-size: 13px;
+  }
+
+  .mat-mdc-menu-item .mat-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: var(--space-3);
+    color: var(--text-secondary);
+    font-size: 18px;
+  }
+
+  .mat-divider {
+    margin: var(--space-1) 0;
+    border-top-color: var(--border-subtle);
+  }
+}
+
+.account-menu-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 52px;
+  padding: var(--space-2) var(--space-3);
+
+  mat-icon {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
+    color: var(--text-secondary);
+    font-size: 32px;
+  }
+
+  div {
+    min-width: 0;
+  }
+
+  strong,
+  span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+  }
+
+  span {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 16px;
+  }
 }
 
 mat-sidenav-container {
-  height: calc(100vh - 64px);
+  height: calc(100vh - var(--app-toolbar-height));
+  background: var(--surface-page);
+}
+
+mat-sidenav {
+  overflow: hidden;
+  background: var(--surface-panel);
+  border-right: 1px solid var(--border-subtle);
+  box-shadow: none;
+}
+
+mat-sidenav-content {
+  background: var(--surface-page);
+}
+
+.content {
+  min-height: calc(100vh - var(--app-toolbar-height));
+  padding: var(--space-4);
 }
 
 mat-sidenav,
 mat-sidenav-content {
-  transition: all 500ms ease-in-out;
+  transition: width 160ms ease, margin-left 160ms ease;
+}
+
+@media (max-width: 960px) {
+  .product-mark {
+    width: auto;
+  }
+
+  .mark-text {
+    display: none;
+  }
+
+  .search-slot {
+    width: min(520px, 54vw);
+  }
+}
+
+@media (max-width: 720px) {
+  .search-slot {
+    display: none;
+  }
+
+  .content {
+    padding: var(--space-3);
+  }
 }

@@ -1,95 +1,86 @@
-:host * {
-  transition: all 500ms ease-in-out;
+:host {
+  display: block;
 }
 
-/* Override MDC list item borders */
-.mdc-list-item {
-  border: none !important;
-  border-radius: 0 !important;
+:host ::ng-deep .menu-item {
+  position: relative;
+  height: 36px !important;
+  min-height: 36px !important;
+  overflow: hidden;
+  color: var(--text-secondary) !important;
+  border-radius: var(--radius-sm) !important;
+  transition: background-color 120ms ease, color 120ms ease;
+
+  &::before {
+    position: absolute;
+    top: 7px;
+    bottom: 7px;
+    left: 0;
+    width: 3px;
+    content: "";
+    background: transparent;
+    border-radius: 999px;
+  }
+
+  .mat-mdc-list-item-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px !important;
+    color: inherit !important;
+    font-size: 20px;
+  }
+
+  .mdc-list-item__primary-text {
+    overflow: hidden;
+    color: inherit !important;
+    font-size: 13px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &:hover {
+    color: var(--text-primary) !important;
+    background: var(--surface-hover) !important;
+  }
 }
 
-.mdc-list-item::before,
-.mdc-list-item::after {
-  border: none !important;
+:host ::ng-deep .selected-menu-item {
+  color: var(--color-primary) !important;
+  background: var(--color-primary-subtle) !important;
+
+  &::before {
+    background: var(--color-primary);
+  }
+
+  .mat-mdc-list-item-icon {
+    color: var(--color-primary) !important;
+  }
+
+  .mdc-list-item__primary-text {
+    font-weight: 700;
+  }
 }
 
-/* Ensure consistent alignment for all menu items */
-.menu-item {
-  --mat-list-list-item-leading-icon-start-space: 16px;
-  --mat-list-list-item-leading-icon-end-space: 16px;
-}
-
-/* Consistent padding and alignment for both button and anchor elements */
-button.menu-item,
-a.menu-item {
-  padding-left: 16px !important;
-  text-align: left;
-  justify-content: flex-start;
-}
-
-/* When sidenav is collapsed, center the icons to align with header */
-::ng-deep .collapsed .menu-item {
-  display: flex !important;
+:host-context(.collapsed) ::ng-deep .menu-item,
+:host ::ng-deep .collapsed .menu-item {
   justify-content: center !important;
-  align-items: center !important;
   padding: 0 !important;
-  margin: 0 !important;
-  width: 100% !important;
-}
 
-::ng-deep .collapsed .menu-item .mdc-list-item {
-  justify-content: center !important;
-  padding: 8px 0 !important;
-  width: 100% !important;
-}
+  .mdc-list-item__content {
+    display: none;
+  }
 
-::ng-deep .collapsed .menu-item .mdc-list-item__content {
-  justify-content: center !important;
-  padding: 0 !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  width: 100% !important;
-}
+  .mat-mdc-list-item-icon {
+    margin: 0 !important;
+  }
 
-::ng-deep .collapsed .menu-item .mdc-list-item__start {
-  margin: 0 !important;
-  padding: 0 !important;
-  width: auto !important;
-}
-
-::ng-deep .collapsed .menu-item .mat-mdc-list-item-icon {
-  margin: 0 auto !important;
-  padding: 0 !important;
-}
-
-::ng-deep .collapsed .menu-item .mat-icon {
-  margin: 0 auto !important;
-  display: block !important;
-}
-
-/* Fallback: Use transform to center if flexbox doesn't work */
-::ng-deep .collapsed .menu-item {
-  position: relative !important;
-}
-
-::ng-deep .collapsed .menu-item .mat-icon {
-  position: absolute !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-}
-
-/* Hide arrow icons when collapsed */
-::ng-deep .collapsed .menu-item mat-list-item-meta,
-::ng-deep .collapsed .menu-item .mat-mdc-list-item-meta,
-::ng-deep .collapsed .menu-item [matListItemMeta] {
-  display: none !important;
-}
-
-.selected-menu-item {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.indented {
-  --mat-list-list-item-leading-icon-start-space: 48px;
-  padding-left: 48px !important;
+  &::before {
+    top: auto;
+    right: 14px;
+    bottom: 3px;
+    left: 14px;
+    width: auto;
+    height: 3px;
+  }
 }

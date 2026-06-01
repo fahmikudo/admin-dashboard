@@ -1,4 +1,4 @@
-import { Component, computed, Input, signal } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -9,7 +9,6 @@ export type MenuItem = {
   icon: string;
   label: string;
   route?: string;
-  subItems?: MenuItem[];
 };
 
 @Component({
@@ -27,22 +26,49 @@ export class CustomSidenavComponent {
 
   menuItems = signal<MenuItem[]>([
     {
-      label: 'Dashboard',
-      icon: 'dashboard',
+      label: 'Overview',
+      icon: 'space_dashboard',
       route: 'dashboard',
     },
     {
-      label: 'Examples',
-      icon: 'wrap_text',
-      subItems: [
-        {
-          label: 'Sub Examples',
-          icon: 'video_library',
-          route: 'examples/sub-examples',
-        },
-      ],
+      label: 'Sales',
+      icon: 'point_of_sale',
+      route: 'sales',
+    },
+    {
+      label: 'Inventory',
+      icon: 'inventory_2',
+      route: 'inventory',
+    },
+    {
+      label: 'Purchasing',
+      icon: 'shopping_bag',
+      route: 'purchasing',
+    },
+    {
+      label: 'Customers',
+      icon: 'groups',
+      route: 'customers',
+    },
+    {
+      label: 'Finance',
+      icon: 'account_balance',
+      route: 'finance',
+    },
+    {
+      label: 'Work items',
+      icon: 'view_list',
+      route: 'examples/sub-examples',
+    },
+    {
+      label: 'Reports',
+      icon: 'insert_chart',
+      route: 'reports',
+    },
+    {
+      label: 'Settings',
+      icon: 'settings',
+      route: 'settings',
     },
   ]);
-
-  profilePicSize = computed(() => (this.sideNavCollapsed() ? '32' : '64'));
 }
